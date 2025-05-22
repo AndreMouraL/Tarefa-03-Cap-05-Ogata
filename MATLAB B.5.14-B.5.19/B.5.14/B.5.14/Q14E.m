@@ -1,29 +1,32 @@
-% ----- MATLAB program to obtain e(t) versus t curves -----
+% MATLAB para obter e(t) versus t
 
-% ***** Unit-step response *****
-num = [0 0 0 1];
-den = [1 1 1 0 40];
-t = 0:0.01:40;
-x = step(num, den, t);
-r = ones(size(t));
-e = r - x;
+% Tempo de simulação
+t = 0:0.01:3;
+
+% Função de transferência do sistema
+num = [0 0 0 40];
+den = [0.1 1 10 40];
+sys = tf(num, den);
+
+% ***** RESPOSTA AO DEGRAU UNITÁRIO *****
+x1 = step(sys, t);            % Resposta do sistema ao degrau unitário
+e1 = 1 - x1;                  % r(t) = 1*u(t), então e(t) = 1 - x(t)
+
 figure;
-plot(t, e)
-grid
-title('Plot of e(t) versus t when r(t) = 1 (step)')
-xlabel('t (s)')
+plot(t, e1, 'b', 'LineWidth', 2)
+grid on
+title('Gráfico de e(t) versus t quando r(t) = 1·u(t)')
+xlabel('t (segundos)')
 ylabel('e(t) = 1 - x(t)')
 
-% ***** Unit-ramp response *****
-numr = [0 0 1 0];
-denr = [1 1 1 0 40 0];
-y1 = step(numr, denr, t);
-r1 = t;
-e1 = r1 - y1;
+% ***** RESPOSTA À RAMPA UNITÁRIA *****
+r = t;                        % Entrada rampa: r(t) = t·u(t)
+x2 = lsim(sys, r, t);         % Resposta do sistema à entrada rampa
+e2 = r - x2;                  % Erro: e(t) = r(t) - x(t)
+
 figure;
-plot(t, e1)
-grid
-title('Plot of e(t) versus t when r(t) = t (ramp)')
-xlabel('t (s)')
+plot(t, e2, 'r', 'LineWidth', 2)
+grid on
+title('Gráfico de e(t) versus t quando r(t) = t·u(t)')
+xlabel('t (segundos)')
 ylabel('e(t) = t - x(t)')
-% ajeitar o codigo graficos saindo errado. ATT
